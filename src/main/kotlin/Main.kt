@@ -1,99 +1,121 @@
+import com.sun.org.apache.xpath.internal.operations.Bool
+import sun.security.util.Password
+
 fun main(args: Array<String>) {
+
 
     val userList = mutableListOf<User>()
 
-    printGreetings()
-    val currentUser = registration()
-    userList.add(currentUser)
-    permanentInterface(currentUser, userList)
+    var currentUser : User
 
 
-}
-
-fun permanentInterface(user : User, userList : List<User>) {
     while (true) {
 
-        println("""
-           Пожалуйста, выберите одну из опций:
-           1. Посмотреть информацию об аккаунте
-           2. Посмотреть обо всех аккаунтах
-           3. Выйти из аккаунта
-       """.trimIndent())
+        val userChoice = greetingInterface()
 
-        val userChoice = readln().toInt()
-        userOption(userChoice, user, userList)
-
-    }
-}
-
-fun printAllUsers(userList: List<User>) {
-    userList.forEach {
-        it.printAllUserData()
-        println("" +
-                "")
-    }
-}
-
-
-fun printGreetings () {
-    println("""
-        Добро пожаловать в интерфейс кинотеатра!
-    """.trimIndent())
-}
-
-fun registration () : User {
-    println("""
-        Перед тем, как начать работу - зарегистрируйтесь:
-    """.trimIndent())
-    val login = readLogin()
-    val password = readPassword()
-    val user = User (
-        login = login,
-        password = password,
-    )
-    return user
-}
-
-fun readLogin () : String {
-    println("Введите ваш логин:")
-    return readln()
-}
-
-fun readPassword () : String {
-    println("Введите ваш пароль:")
-    return readln()
-}
-fun userOption (choice : Int, user : User, userList: List<User>) {
-    if (choice == 1) {
-        while (true) {
-            user.printAllUserData()
-            println("" +
-                    "")
-            break
-        }
-    } else if (choice == 2) {
-        while (true) {
-            printAllUsers(userList)
-            println("" +
-                    "")
-            break
-        }
-    }
-}
-
-fun registrationAuthenticationInterface () {
-    while (true) {
-        println("""
-            Выберите одну из опций:
-            1. Зарегистрироваться
-            2. Войти в существующий аккаунт
-        """.trimIndent())
-        val userChoice = readln().toInt()
         if (userChoice == 1) {
-            // registration
+            val accountIndex = authorization(userList)
+            currentUser = findAccountInBaseByIndex(userList, accountIndex)
+
+
         } else if (userChoice == 2) {
-            // authentication
+            val currentUser = registration(userList)
+            userList.add(currentUser)
+
+        }
+
+    }
+
+
+
+    //userList.add(currentUser)
+    //permanentInterface(currentUser, userList)
+
+
+}
+
+fun greetingInterface() : Int {
+    println("""
+        Привет! Добро пожаловать в наш кинотеатр.
+        Перед тем, как приступить к работе выбери одну из опций:
+        1. Авторизоваться
+        2. Зарегистрироваться   
+    """.trimIndent())
+
+    return readln().toInt()
+}
+
+fun registration (userList : List<User>) : User {
+
+    var isRegistered = false
+
+    while (!isRegistered) {
+        println("Пожалуйста, введите ваш логин:")
+        val loginInput = readln()
+
+        if (checkLoginInBase(userList, loginInput)) {
+            println("Такой аккаунт уже существует. Введите другой логин:")
+        } else {
+            isRegistered = true
+            println("Пожалуйста, введите ваш пароль:")
+            var passwordInput = readln()
+
+            return User (
+                login = loginInput,
+                password = passwordInput,
+                inSystem = true,
+            )
         }
     }
+    return User (
+        login = "UNKNOWN",
+        password = "UNKNOWN",
+        inSystem = false
+    )
 }
+
+fun authorization (userList: List<User>) : Int {
+
+    var isLoggedIn = false
+
+    while (!isLoggedIn) {
+        println("Введите ваш логин:")
+        val loginInput = readln()
+        println("Введите ваш пароль:")
+        val passwordInput = readln()
+        var result = checkAccountInBase(userList, loginInput, passwordInput)
+        if (result != -1) {
+            println("Вы успешно авторизовались")
+            return result
+        }
+        else {
+            return result
+        }
+    }
+    return -1
+}
+fun checkLoginInBase (userList : List<User>, userLogin : String) : Boolean {
+    userList.forEach {
+        if (it.login == userLogin) {return true}
+    }
+    return false
+}
+
+fun checkAccountInBase (userList: List<User>, userLogin : String, userPassword : String) : Int {
+    userList.forEachIndexed { i, user ->
+        if (user.login == userLogin && user.password == userPassword) {
+            return i
+        }
+        else {
+            return -1
+        }
+    }
+    return -1
+}
+
+fun findAccountInBaseByIndex (userList: List<User>, index : Int) : User {
+    return userList[index]
+}
+
+
 

@@ -2,11 +2,10 @@ class User (
     val login : String,
     val password : String,
     val isAdmin : Boolean = false,
+    var inSystem : Boolean = false,
 ) {
 
-    init {
-        println("Пользователь успешно создан")
-    }
+
 
     fun printAllUserData () {
         println("""
@@ -15,4 +14,6 @@ class User (
             adminRights: $isAdmin
         """.trimIndent())
     }
+
+
 }
