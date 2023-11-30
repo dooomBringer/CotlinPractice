@@ -7,7 +7,6 @@ class User(
 ) {
 
 
-
     fun printAllUserData () {
         println("""
             login: $login
