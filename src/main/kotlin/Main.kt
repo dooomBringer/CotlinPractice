@@ -1,5 +1,4 @@
-import com.sun.org.apache.xpath.internal.operations.Bool
-import sun.security.util.Password
+import kotlin.math.log
 
 fun main(args: Array<String>) {
 
@@ -11,6 +10,8 @@ fun main(args: Array<String>) {
         if (userChoice == 1) {
             val accountIndex = authorization(userList)
             currentUser = findAccountInBaseByIndex(userList, accountIndex)
+            permanentInterface(currentUser)
+
         } else if (userChoice == 2) {
             val currentUser = registration(userList)
             userList.add(currentUser)
@@ -62,22 +63,26 @@ fun registration (userList : List<User>) : User {
 fun authorization (userList: List<User>) : Int {
 
     var isLoggedIn = false
+    var result = -1
+
 
     while (!isLoggedIn) {
         println("Введите ваш логин:")
         val loginInput = readln()
         println("Введите ваш пароль:")
         val passwordInput = readln()
-        var result = checkAccountInBase(userList, loginInput, passwordInput)
+
+        result = checkAccountInBase(userList, loginInput, passwordInput)
+
         if (result != -1) {
+            isLoggedIn = true
             println("Вы успешно авторизовались")
-            return result
         }
         else {
-            return result
+            println("Неверные данные или аккаунт не существует")
         }
     }
-    return -1
+    return result
 }
 fun checkLoginInBase (userList : List<User>, userLogin : String) : Boolean {
     userList.forEach {
@@ -112,9 +117,18 @@ fun permanentInterface (user: User) {
 
         val userChoice = readln().toInt()
 
-        if (userChoice == 1) {break}
+        when (userChoice) {
+            1 -> {break}
+            2 -> printAccountInformation(user)
+            // 3 - >
+        }
     }
 }
+
+fun printAccountInformation (user : User) {
+    user.printAllUserData()
+}
+
 
 
 
