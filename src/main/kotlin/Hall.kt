@@ -1,11 +1,12 @@
 abstract class Hall () {
     abstract val name : String
-}
-
-class InDoorHall (override val name: String) : Hall() {
+    abstract val films : List<Film>
 
 }
 
-class OpenAirHall (override val name: String) : Hall() {
+class InDoorHall (override val name: String, override val films: List<Film>) : Hall(
+) {
+}
 
+class OpenAirHall (override val name: String, override val films: List<Film>) : Hall() {
 }
