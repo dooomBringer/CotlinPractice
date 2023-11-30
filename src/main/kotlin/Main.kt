@@ -3,35 +3,20 @@ import sun.security.util.Password
 
 fun main(args: Array<String>) {
 
-
     val userList = mutableListOf<User>()
-
     var currentUser : User
 
-
     while (true) {
-
         val userChoice = greetingInterface()
-
         if (userChoice == 1) {
             val accountIndex = authorization(userList)
             currentUser = findAccountInBaseByIndex(userList, accountIndex)
-
-
         } else if (userChoice == 2) {
             val currentUser = registration(userList)
             userList.add(currentUser)
-
+            permanentInterface(currentUser)
         }
-
     }
-
-
-
-    //userList.add(currentUser)
-    //permanentInterface(currentUser, userList)
-
-
 }
 
 fun greetingInterface() : Int {
@@ -115,6 +100,20 @@ fun checkAccountInBase (userList: List<User>, userLogin : String, userPassword :
 
 fun findAccountInBaseByIndex (userList: List<User>, index : Int) : User {
     return userList[index]
+}
+
+fun permanentInterface (user: User) {
+    while (true) {
+        println("""
+            Выберите один из доступных вариантов:
+            1. Выйти из аккаунта
+            2. Посмотреть текущую информацию
+        """.trimIndent())
+
+        val userChoice = readln().toInt()
+
+        if (userChoice == 1) {break}
+    }
 }
 
 
