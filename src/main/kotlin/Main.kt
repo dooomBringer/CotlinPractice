@@ -1,21 +1,29 @@
-import kotlin.math.log
-
 fun main(args: Array<String>) {
+
 
     val userList = mutableListOf<User>()
     var currentUser : User
+    var cinemaList = mutableListOf<Cinema>()
+
 
     while (true) {
         val userChoice = greetingInterface()
         if (userChoice == 1) {
             val accountIndex = authorization(userList)
             currentUser = findAccountInBaseByIndex(userList, accountIndex)
+            if (checkForAdmin(currentUser)) {
+                adminPermanentInterface(currentUser, cinemaList)
+            }
             permanentInterface(currentUser)
 
         } else if (userChoice == 2) {
             val currentUser = registration(userList)
             userList.add(currentUser)
+            if (checkForAdmin(currentUser)) {
+                adminPermanentInterface(currentUser, cinemaList)
+            }
             permanentInterface(currentUser)
+
         }
     }
 }
@@ -33,18 +41,24 @@ fun greetingInterface() : Int {
 
 fun registration (userList : List<User>) : User {
 
-    var isRegistered = false
-
-    while (!isRegistered) {
+    while (true) {
         println("Пожалуйста, введите ваш логин:")
         val loginInput = readln()
 
         if (checkLoginInBase(userList, loginInput)) {
             println("Такой аккаунт уже существует. Введите другой логин:")
         } else {
-            isRegistered = true
             println("Пожалуйста, введите ваш пароль:")
-            var passwordInput = readln()
+            val passwordInput = readln()
+
+            if (askAdminRoots()) {
+                return User (
+                    login = loginInput,
+                    password = passwordInput,
+                    inSystem = true,
+                    isAdmin = true,
+                )
+            }
 
             return User (
                 login = loginInput,
@@ -53,11 +67,6 @@ fun registration (userList : List<User>) : User {
             )
         }
     }
-    return User (
-        login = "UNKNOWN",
-        password = "UNKNOWN",
-        inSystem = false
-    )
 }
 
 fun authorization (userList: List<User>) : Int {
@@ -96,15 +105,37 @@ fun checkAccountInBase (userList: List<User>, userLogin : String, userPassword :
         if (user.login == userLogin && user.password == userPassword) {
             return i
         }
-        else {
-            return -1
-        }
     }
     return -1
 }
 
 fun findAccountInBaseByIndex (userList: List<User>, index : Int) : User {
     return userList[index]
+}
+
+
+
+fun adminPermanentInterface (user: User, cinemaList: MutableList<Cinema>) {
+    while (true) {
+        println("""
+            Выберите один из доступных вариантов:
+            1. Выйти из аккаунта
+            2. Посмотреть текущую информацию
+            3. Создать кинотеатр
+            4. Посмотреть список существующих кинотеатров
+        """.trimIndent())
+
+        val userChoice = readln().toInt()
+
+        when (userChoice) {
+            1 -> {break}
+            2 -> printAccountInformation(user)
+            3 -> cinemaList.add(createCinema())
+            4 -> cinemaList.forEach {
+                it.printCinemaData()
+            }
+        }
+    }
 }
 
 fun permanentInterface (user: User) {
@@ -129,6 +160,30 @@ fun printAccountInformation (user : User) {
     user.printAllUserData()
 }
 
+fun askAdminRoots() : Boolean {
+    println("""
+        Хотите ли вы получить права админа?
+        1. Да
+        2. Нет
+    """.trimIndent())
+    val adminInput = readln().toInt()
+    if (adminInput == 1) {
+        return true
+    }
+    return false
+}
+
+fun checkForAdmin(user : User) : Boolean {
+    return user.isAdmin
+}
+
+fun createCinema () : Cinema {
+    println("Введите название кинотеатра:")
+    val cinemaName = readln()
+    println("Введите адрес кинотеатра:")
+    val cinemaAddress = readln()
+    return Cinema(cinemaName, cinemaAddress)
+}
 
 
 
