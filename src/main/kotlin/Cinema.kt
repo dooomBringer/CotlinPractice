@@ -1,8 +1,9 @@
 class Cinema (
     val name: String,
     val address: String,
+    var hallList: MutableList<Hall> = mutableListOf()
+
 ) {
-    val halls = mutableListOf<Hall>()
 
     fun printCinemaData() {
         println("""

@@ -177,13 +177,70 @@ fun checkForAdmin(user : User) : Boolean {
     return user.isAdmin
 }
 
+
+
+
 fun createCinema () : Cinema {
     println("Введите название кинотеатра:")
     val cinemaName = readln()
     println("Введите адрес кинотеатра:")
     val cinemaAddress = readln()
+    val cinema = Cinema(cinemaName, cinemaAddress)
+    val halls = createHall(cinema)
+    cinema.hallList = halls
     return Cinema(cinemaName, cinemaAddress)
 }
+
+fun createHall (cinema: Cinema) : MutableList<Hall> {
+    var halls = mutableListOf<Hall>()
+    var counter = 1
+    println("Подскажите, сколько залов вы хотите сделать?")
+    val hallAmount = readln().toInt()
+    while (hallAmount != 0) {
+        println("Зал номер $counter")
+        println("Зал будет под открым небом или в здании?" +
+                "1 - Небо" +
+                "2 - Здание")
+        val typeChoice = readln().toInt()
+        println("Введите название зала")
+        val hallName = readln()
+
+
+
+        println("Напиши количество сессий")
+
+
+        if (typeChoice == 1) {
+            //halls.add(OpenAirHall(hallName, ))
+        } else {
+            //halls.add(InDoorHall(hallName, ))
+        }
+
+    }
+    return halls
+
+}
+
+fun createFilm() : Film {
+    println("Какой фильм будет идти в этом зале?" +
+            "Напиши название")
+    val filmName = readln()
+    println("Напиши длительность фильма в минутах")
+    val filmDurability = readln().toInt()
+    //return Film(filmName, filmDurability, )
+
+}
+
+fun createSession(film : Film) : Session {
+    println("Напиши время сеанса в формате чч:мм")
+    val sessionTime = readln()
+}
+
+fun createListOfSeats(session: Session) : Seat {
+
+}
+
+
 
 
 
